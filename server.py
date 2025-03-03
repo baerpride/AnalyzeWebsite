@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import openai
 
 # Установи свой OpenAI API ключ
-openai.api_key = "ВАШ_OPENAI_API_KEY"
+client = openai.OpenAI(api_key="ВАШ_OPENAI_API_KEY")
 
 app = FastAPI()
 
@@ -75,13 +75,13 @@ Email: ...
 Верни данные в JSON-формате.
 """
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "system", "content": prompt}],
         temperature=0.0,
     )
 
-    company_info = eval(response["choices"][0]["message"]["content"])
+    company_info = eval(response.choices[0].message.content)
     return generate_system_prompt(company_info)
 
 @app.post("/process")
